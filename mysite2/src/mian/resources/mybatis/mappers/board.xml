@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="board">
+	<select id = "getList" resultType="boardvo" parameterType="Long">
+		<![CDATA[
+			select * 
+				from ( select rownum rn, c.* 
+					from ( select a.no,
+								  a.title,
+								  a.hit,
+								  to_char(a.reg_date, 'yyyy-mm-dd') as regDate,
+								  b.name as userName,
+								  b.no as userNo
+								from board a,
+								  	 users b
+							where a.USERS_NO = b.NO
+							order by a.g_no desc,
+									 a.o_no asc) c)
+			
+		]]>
+		<!--  where (#{pageNo }-1)*5 + 1 <= rn and rn <= #{pageNo }*5 -->
+	</select>
+	
+	<insert id="write" parameterType="boardvo">
+		<choose>
+			<when test="groupNo == null">
+				<![CDATA[
+					insert 
+						into board 
+					values (seq_board.nextval, #{title }, #{content }, sysdate, 0, nvl((select max(g_no) from board), 0) + 1, 1, 0, #{userNo })
+				]]>
+			</when>
+			<otherwise>
+			<![CDATA[
+				insert 
+					into board 
+				values (seq_board.nextval, #{title }, #{content }, sysdate, 0, #{groupNo }, #{orderNo }, #{depth }, #{userNo })
+			]]>
+			</otherwise>
+		</choose>
+	</insert>
+	
+	<update id="group" parameterType="boardvo">
+		<![CDATA[
+			update board set o_no = o_no + 1 where g_no = #{groupNo } and o_no > #{orderNo}
+		]]>
+	</update>
+	
+	<delete id="delete" parameterType="boardvo">
+		<![CDATA[
+			delete
+				from board
+			where no = #{no } and users_no = #{userNo }
+		]]>
+	</delete>
+	
+	<select id="view" resultType="boardvo" parameterType="Long">
+		<![CDATA[
+			select
+				a.no, a.title, a.content, b.no as userNo
+					from board a, users b
+			where a.users_no = b.no and a.no = #{boardNo }
+		]]>
+	</select>
+	
+	<select id="getByNo" resultType="boardvo" parameterType="Long">
+		<![CDATA[
+			select 
+				no, title, content, g_no as groupNo, o_no as orderNo, depth, users_no as userNo
+					from board
+			where no = #{no }
+		]]>
+	</select>
+	
+	<update id="modify" parameterType="boardvo">
+		<![CDATA[
+			update
+				board set title = #{title }, content = #{content }
+			where users_no = #{userNo } and no = #{no }
+		]]>
+	</update>
+	
+	<update id="hit" parameterType="boardvo">
+		<![CDATA[
+			update board set hit = hit + 1 where no = #{no }
+		]]>
+	</update>
+</mapper>
