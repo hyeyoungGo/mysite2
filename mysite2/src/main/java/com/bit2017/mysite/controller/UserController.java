@@ -1,8 +1,14 @@
 package com.bit2017.mysite.controller;
 
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,14 +37,24 @@ public class UserController {
 	}
 	
 	@RequestMapping("/joinform")
-	public String joinform() {
+	public String joinform(@ModelAttribute UserVo userVo) {
 		return "user/joinform";
 	}
 	
-	@ResponseBody
 	@RequestMapping("/join")
-	public String join(@ModelAttribute UserVo userVo) {
-		userService.join(userVo);
+	public String join(@ModelAttribute @Valid UserVo userVo,
+					   BindingResult result,
+					   Model model) {
+		if(result.hasErrors() == true) {
+			List<ObjectError> list = result.getAllErrors();
+			for(ObjectError error : list) {
+				System.out.println(error);
+			}
+			model.addAllAttributes(result.getModel());
+			return "/user/joinform";
+		}
+		
+		//userService.join(userVo);
 		return "redirect:/user/joinsuccess";
 	}
 	
