@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StopWatch;
 
 import com.bit2017.mysite.vo.GuestBookVo;
 
@@ -27,6 +28,15 @@ public class GuestBookDao {
 	}
 	
 	public List<GuestBookVo> getList(int page) {
+		/*StopWatch stopWatch = new StopWatch();
+		
+		stopWatch.start();
+		
+		List<GuestBookVo> list = sqlSession.selectList("guestbook.getListByPage", page);
+		
+		stopWatch.stop();
+		System.out.println(stopWatch.getTotalTimeMillis());*/
+		
 		return sqlSession.selectList("guestbook.getListByPage", page);
 	}
 	

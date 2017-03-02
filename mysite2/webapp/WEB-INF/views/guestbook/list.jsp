@@ -36,11 +36,11 @@
 							<td>[${countList - status.index }]</td>
 							<td>${vo.name }</td>
 							<td>${vo.regDate }</td>
-							<td><a href="${pageContext.request.contextPath }/guestbook/deleteform/${no }">삭제</a></td>
+							<td><a href="${pageContext.request.contextPath }/guestbook/deleteform/${vo.no }">삭제</a></td>
 						</tr>
 						<tr>
 							<td colspan=3>${vo.content }</td>
-							<td><a href="${pageContext.request.contextPath }/guestbook/modifyform/${no }">수정</a></td>
+							<td><a href="${pageContext.request.contextPath }/guestbook/modifyform/${vo.no }">수정</a></td>
 						</tr>
 					</table>
 				</c:forEach>

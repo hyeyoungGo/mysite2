@@ -33,7 +33,7 @@
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 
-	<!-- utf-8 encoding filter(한글처리 -->
+	<!-- utf-8 encoding filter(한글처리) -->
 	<filter>
 		<filter-name>encodingFilter</filter-name>
 		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
